@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @shelf.name %>
+</p>
+
+<p>
+  <strong>State:</strong>
+  <%= @shelf.state %>
+</p>
+
+<p>
+  <strong>Open date:</strong>
+  <%= @shelf.open_date %>
+</p>
+
+<p>
+  <strong>Harvest date:</strong>
+  <%= @shelf.harvest_date %>
+</p>
+
+<p>
+  <strong>Close date:</strong>
+  <%= @shelf.close_date %>
+</p>
+
+<p>
+  <strong>End date:</strong>
+  <%= @shelf.end_date %>
+</p>
+
+<p>
+  <strong>Cycle:</strong>
+  <%= @shelf.cycle %>
+</p>
+
+<%= link_to 'Edit', edit_house_shelf_path(params[:house_id], @shelf) %> |
+<%= link_to 'Back', house_shelves_path(params[:house_id]) %>

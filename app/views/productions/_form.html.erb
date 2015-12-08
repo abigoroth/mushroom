@@ -1,0 +1,23 @@
+<%= simple_form_for(@production) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :production_date %>
+    <%= f.input :a_am %>
+    <%= f.input :a_pm %>
+    <%= f.input :b_am %>
+    <%= f.input :b_pm %>
+    <%= f.input :c_am %>
+    <%= f.input :c_pm %>
+    <%= f.input :d_am %>
+    <%= f.input :d_pm %>
+    <%= f.input :pa_am %>
+    <%= f.input :pa_pm %>
+    <%= f.input :pb_am %>
+    <%= f.input :pb_pm %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

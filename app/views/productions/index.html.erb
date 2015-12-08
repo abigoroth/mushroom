@@ -1,0 +1,83 @@
+<h1>Listing productions</h1>
+<%= form_for :select, url: productions_path, method: :get do -%>
+<div class="form-group">
+  <label for="sel1">Select year and month:</label>
+  <select class="form-control" id="sel1" name="year">
+    <% (Time.now.year-5..Time.now.year+5).to_a.each do |year| %>
+      <option value="<%= year %>" <%= "selected" if params[:year] == year.to_s %>><%= year %></option>
+    <% end %>
+  </select>
+
+  <select class="form-control" id="sel2" name="month">
+    <% (1..12).to_a.each do |month| %>
+      <option value="<%= month %>" <%= "selected" if params[:month] == month.to_s %>><%= month %></option>
+    <% end %>
+  </select>
+</div>
+
+  <input type="submit" class="btn btn-primary" value="Select">
+<% end %>
+
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Production date</th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+      <th>PA</th>
+      <th>PB</th>
+      <th>Total</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% total = 0 %>
+    <% a_sum = 0 %>
+    <% b_sum = 0 %>
+    <% c_sum = 0 %>
+    <% d_sum = 0 %>
+    <% pa_sum = 0 %>
+    <% pb_sum = 0 %>
+    <% @productions.each do |production| %>
+      <% total = total+production.total %>
+      <% a_sum = a_sum+production.a %>
+      <% b_sum = b_sum+production.b %>
+      <% c_sum = c_sum+production.c %>
+      <% d_sum = d_sum+production.d %>
+      <% pa_sum = pa_sum+production.pa %>
+      <% pb_sum = pb_sum+production.pb %>
+      <tr>
+        <td><%= production.production_date %></td>
+        <td><%= production.a %></td>
+        <td><%= production.b %></td>
+        <td><%= production.c %></td>
+        <td><%= production.d %></td>
+        <td><%= production.pa %></td>
+        <td><%= production.pb %></td>
+        <td><%= production.total %></td>
+        <td><%= link_to 'Edit', edit_production_path(production) %></td>
+        <td><%= link_to 'Destroy', production, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+    <tr>
+      <td></td>
+      <td><b><%= a_sum %></b></td>
+      <td><b><%= b_sum %></b></td>
+      <td><b><%= c_sum %></b></td>
+      <td><b><%= d_sum %></b></td>
+      <td><b><%= pa_sum %></b></td>
+      <td><b><%= pb_sum %></b></td>
+      <td><b><%= total %></b></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Production', new_production_path %>

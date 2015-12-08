@@ -1,0 +1,35 @@
+<% if @shelf.id.nil? %>
+  <% url = "/houses/#{params[:house_id]}/shelves" %>
+<% else %>
+  <% url = "/houses/#{params[:house_id]}/shelves/#{@shelf.id}" %>  
+<% end %>
+<%= simple_form_for(@shelf, url: url, html: { class: 'form-horizontal' }) do |f| %>
+  <% if @shelf.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@shelf.errors.count, "error") %> prohibited this shelf from being saved:</h2>
+
+      <ul>
+      <% @shelf.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= f.input :name %>
+  <% if params[:action] != "new" && params[:action] != "create" %>
+    <%= f.input :state, collection: ["Open", "Harvest", "Close"] %>
+    <%= f.input :open_date if @shelf.state == "Open" %>
+    <%= f.input :harvest_date if @shelf.state == "Harvest" %>
+    <%= f.input :close_date if @shelf.state == "Close" %>
+    <%#= f.input :end_date %>
+  <% else %>
+    <input type="hidden" name="shelf[state]" value="Close">
+  <% end %>
+  <%#= f.input :cycle %>
+  <%#= f.input :house_id %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
