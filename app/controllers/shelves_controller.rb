@@ -32,7 +32,14 @@ class ShelvesController < ApplicationController
 
   # GET /shelves/new
   def new
-    @shelf = Shelf.new
+    close_date = Time.now
+    open_date = close_date+8.days
+    harvest_date = open_date+6.days
+    @shelf = Shelf.new(
+      harvest_date: harvest_date,
+      close_date: close_date,
+      open_date: open_date
+      )
   end
 
   # GET /shelves/1/edit
@@ -110,6 +117,23 @@ class ShelvesController < ApplicationController
     redirect_to house_shelves_path(params[:house_id])
   end
 
+  def reclose
+    shelf = Shelf.find params[:id]
+    shelf.state = "Close"
+    shelf.cycle = shelf.cycle+1
+
+    close_date = Time.now
+    open_date = close_date+8.days
+    harvest_date = open_date+6.days
+    @shelf = shelf.update_attributes(
+      harvest_date: harvest_date,
+      close_date: close_date,
+      open_date: open_date
+      )
+
+    shelf.save
+    redirect_to house_shelves_path(params[:house_id])
+  end
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_shelf

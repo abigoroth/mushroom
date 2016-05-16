@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  customer_id: 1
+  date: 2015-12-17
+  quantity: 1.5
+  expected_payment: 1.5
+  actual_payment: 1.5
+
+two:
+  customer_id: 1
+  date: 2015-12-17
+  quantity: 1.5
+  expected_payment: 1.5
+  actual_payment: 1.5

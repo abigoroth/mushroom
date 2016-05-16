@@ -11,7 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151201024923) do
+ActiveRecord::Schema.define(version: 20151220150226) do
+
+  create_table "customer_purchases", force: true do |t|
+    t.integer  "customer_id"
+    t.date     "date"
+    t.float    "quantity",         limit: 24, default: 0.0
+    t.float    "expected_payment", limit: 24, default: 0.0
+    t.float    "actual_payment",   limit: 24, default: 0.0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "customers", force: true do |t|
+    t.string   "name"
+    t.string   "phone"
+    t.string   "email"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "market_id"
+  end
 
   create_table "houses", force: true do |t|
     t.string   "name"
@@ -19,22 +38,28 @@ ActiveRecord::Schema.define(version: 20151201024923) do
     t.datetime "updated_at"
   end
 
-  create_table "productions", force: true do |t|
-    t.date     "production_date"
-    t.float    "a_am",            limit: 24, default: 0.0
-    t.float    "b_am",            limit: 24, default: 0.0
-    t.float    "c_am",            limit: 24, default: 0.0
-    t.float    "d_am",            limit: 24, default: 0.0
-    t.float    "pa_am",           limit: 24, default: 0.0
-    t.float    "pb_am",           limit: 24, default: 0.0
+  create_table "markets", force: true do |t|
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.float    "a_pm",            limit: 24, default: 0.0
-    t.float    "b_pm",            limit: 24, default: 0.0
-    t.float    "c_pm",            limit: 24, default: 0.0
-    t.float    "d_pm",            limit: 24, default: 0.0
-    t.float    "pa_pm",           limit: 24, default: 0.0
-    t.float    "pb_pm",           limit: 24, default: 0.0
+  end
+
+  create_table "productions", force: true do |t|
+    t.integer  "house_id"
+    t.date     "date"
+    t.float    "am",         limit: 24
+    t.float    "pm",         limit: 24
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sale_records", force: true do |t|
+    t.float    "arra",       limit: 24
+    t.float    "purchase",   limit: 24
+    t.float    "ttl_out",    limit: 24
+    t.date     "date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "shelves", force: true do |t|

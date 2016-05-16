@@ -1,0 +1,16 @@
+
+<%= simple_form_for(@sale_record) do |f| %>
+  <%= f.error_notification %>
+  <input type="hidden" name="year" value="<%= params[:year] %>">
+  <input type="hidden" name="month" value="<%= params[:month] %>">
+  <div class="form-inputs">
+    <%= f.input :arra %>
+    <%= f.input :purchase %>
+    <%#= f.input :ttl_out %>
+    <%= f.input :date %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

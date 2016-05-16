@@ -1,9 +1,9 @@
-<h1>House <%= @house.name %></h1>
+<h1>Rumah <%= @house.name %></h1>
 <%= form_for :operation, url: house_shelves_path + "/operation" , method: :post do -%>
 <div class="form-group">
-  <label for="sel1">Select operation:</label>
+  <label for="sel1">Pilih Operasi:</label>
   <select class="form-control" id="sel1" name="operation">
-    <option>Please select</option>
+    <option>Sila Pilih Operasi</option>
     <option <%= "selected" if params[:operation] == "Open" %>>Open</option>
     <option <%= "selected" if params[:operation] == "Harvest" %>>Harvest</option>
     <option <%= "selected" if params[:operation] == "Close" %>>Close</option>
@@ -15,38 +15,41 @@
   <thead>
     <tr>
       <%= "<th></th>".html_safe if params[:operation] && params[:operation] != "Please select" %>
-      <th>Rack No</th>
-      <th>State</th>
-      <th>Open date</th>
-      <th>Harvest date</th>
-      <th>Close date</th>
+      <th>Nombor Rak</th>
+      <!-- <th>State</th> -->
+      <th>Tutup Bongkah</th>
+      <th>Buka Bongkah</th>
+      <th>Tuai</th>
       <!-- <th>End date</th> -->
-      <th>Cycle</th>
-      <th colspan="3"></th>
+      <th>cycle</th>
+      <th colspan="4"></th>
     </tr>
   </thead>
 
-  <tbody>
+  <tbody align="center">
     <% @shelves.each do |shelf| %>
-      <tr <%= "style='background-color: red;'".html_safe if shelf.cycle > 8 %>>
+      <tr<%= "style='background-color: red;'".html_safe if shelf.cycle > 8 %>>
         <%= "<th>
 <div class='checkbox'>
   <label><input name='shelf_ids[]' type='checkbox' value='#{shelf.id}'></label>
 </div>
       </th>".html_safe if params[:operation] && params[:operation] != "Please select" %>
         <td><%= shelf.name %></td>
-        <td><%= shelf.state %></td>
+        <!-- <td><%= shelf.state %></td> -->
+        <td><%= shelf.close_date %></td>
         <!-- # if shelf.state == "open" -->
         <td><%= shelf.open_date %></td>
         <!-- # if shelf.state == "harvest" -->
         <td><%= shelf.harvest_date %></td>
         <!-- # if shelf.state == "close" -->
-        <td><%= shelf.close_date %></td>
         <!-- <td><%= shelf.end_date %></td> -->
         <td><%= shelf.cycle %></td>
-        <td><%= link_to 'Show', house_shelf_path(params[:house_id], shelf) %></td>
-        <td><%= link_to 'Edit', edit_house_shelf_path(params[:house_id],shelf) %></td>
-        <td><%= link_to 'Destroy', house_shelf_path(params[:house_id], shelf), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td>
+          <%= link_to 'Tutup Semula', reclose_house_shelf_path(params[:house_id], shelf) %>
+        </td>
+        <td><%= link_to 'Papar', house_shelf_path(params[:house_id], shelf) %></td>
+        <td><%= link_to 'Ubah', edit_house_shelf_path(params[:house_id],shelf) %></td>
+        <td><%= link_to 'Musnah', house_shelf_path(params[:house_id], shelf), method: :delete, data: { confirm: 'Anda pasti ingin membuang rak ?' } %></td>
       </tr>
     <% end %>
   </tbody>
@@ -58,13 +61,13 @@
   <% end %>
 <% end %>
 
-Total opened today : <%= @house.shelves.where("open_date = '#{(Time.now-0.days).to_date.to_s}'").count %> <br>
-Total harvested today : <%= @house.shelves.where("harvest_date = '#{(Time.now-0.days).to_date.to_s}'").count %> <br>
-Total closed today : <%= @house.shelves.where("close_date = '#{(Time.now-0.days).to_date.to_s}'").count %>
+Jumlah rak dibuka bongkah hari ini : <%= @house.shelves.where("open_date = '#{(Time.now-0.days).to_date.to_s}'").count %> <br>
+Jumlah rak dituai hari ini : <%= @house.shelves.where("harvest_date = '#{(Time.now-0.days).to_date.to_s}'").count %> <br>
+Jumlah rak ditutup bongkah : <%= @house.shelves.where("close_date = '#{(Time.now-0.days).to_date.to_s}'").count %>
 
 <br>
 
-<%= link_to 'New Shelf', new_house_shelf_path(params[:house_id]) %>
+<%= link_to 'Tambah Rak Baru', new_house_shelf_path(params[:house_id]) %>
 <script>
 $( "#sel1" ).change(function() {
   window.location = "?operation=" + $( "#sel1" ).val();

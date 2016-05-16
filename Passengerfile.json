@@ -1,0 +1,6 @@
+{
+"environment": "development",
+"port": 3002,
+"daemonize": true,
+"default_user":"system"
+}

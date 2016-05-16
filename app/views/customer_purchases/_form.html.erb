@@ -1,0 +1,15 @@
+<%= simple_form_for(@customer_purchase) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :customer_id, collection: Customer.all.map{|x| [x.name, x.id]} %>
+    <%= f.input :date %>
+    <%= f.input :quantity %>
+    <%= f.input :expected_payment %>
+    <%= f.input :actual_payment %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

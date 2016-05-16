@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Pelangan:</strong>
+  <%= @customer_purchase.customer_id %>
+</p>
+
+<p>
+  <strong>Tarikh:</strong>
+  <%= @customer_purchase.date %>
+</p>
+
+<p>
+  <strong>Kuantiti:</strong>
+  <%= @customer_purchase.quantity %>
+</p>
+
+<p>
+  <strong>Jumlah Perlu Dibayar:</strong>
+  <%= @customer_purchase.expected_payment %>
+</p>
+
+<p>
+  <strong>Jumlah Yang Dibayar:</strong>
+  <%= @customer_purchase.actual_payment %>
+</p>
+
+<%= link_to 'Ubah', edit_customer_purchase_path(@customer_purchase) %> |
+<%= link_to 'Kembali', customer_purchases_path %>

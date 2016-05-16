@@ -1,0 +1,89 @@
+<h1>Senarai Pasar</h1>
+<br>
+<form action="" id="market">
+  Tahun : 
+  <select name="year" id="" class="dosubmit">
+    <% (Time.now.year-5..Time.now.year+5).to_a.each do |y| %>
+    <option 
+      value="<%=y%>" 
+      <%= "selected=selected" if params[:year] == y.to_s %>
+      ><%= y %></option>
+    <% end %>
+  </select>
+
+  Bulan : 
+  <select name="month" id="" class="dosubmit">
+    <% (1..12).to_a.each do |m| %>
+    <option 
+      value="<%=m%>" 
+      <%= "selected=selected" if params[:month] == m.to_s %>
+      ><%= m %></option>
+    <% end %>
+  </select>
+
+</form>
+<br>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Pasar</th>
+      <th>Kuantiti</th>
+      <th>Jumlah Sepatutnya dibayar</th>
+      <th>Jumlah yang dibayar</th>
+      <th>Baki / Hutang</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody align="center">
+    <% @markets.each do |market| %>
+      <tr>
+        <td>
+          <%= link_to market.name , customer_purchases_path(:market_id => market.id, month: params[:month], year: params[:year]) %></td>
+        <td>
+          <%= market.quantity_by_month(params[:month] , params[:year]) %>
+        </td>
+        <td>
+          <%= market.expected_payment_by_month(params[:month] , params[:year]) %>
+        </td>
+        <td>
+          <%= market.actual_payment_by_month(params[:month] , params[:year]) %>
+        </td>
+        <td>
+          <%= market.debt_by_month(params[:month] , params[:year]) %>
+        </td>
+        <td><%= link_to 'Papar', market %></td>
+        <td><%= link_to 'Ubah', edit_market_path(market) %></td>
+        <td><%= link_to 'Musnah', market, method: :delete, data: { confirm: 'Anda Pasti Buang dan Padam Pasar?' } %></td>
+      </tr>
+    <% end %>
+
+    <tr>
+      <td>TTL</td>
+      <td>
+        <%= Market.quantity_by_month(params[:month], params[:year]) %>
+      </td>
+      <td>
+        <%= Market.expected_payment_by_month(params[:month], params[:year]) %>
+      </td>
+      <td>
+        <%= Market.actual_payment_by_month(params[:month], params[:year]) %>
+      </td>
+      <td>
+        <%= Market.debt_by_month(params[:month], params[:year]) %>
+      </td>
+    </tr>
+  </tbody>
+
+</table>
+
+<br>
+
+<%= link_to 'Pasar Baru', new_market_path %>
+
+<script>
+  $(".dosubmit").change(function(){
+    $("#market").submit()
+  })
+</script>

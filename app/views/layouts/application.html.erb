@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Mushroom</title>
+  <title>MushroomV2</title>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
@@ -28,4 +28,23 @@
 </div>
 
 </body>
+
+<style>
+tbody tr:nth-child(odd) {
+   background-color: #ccc;
+}
+td,th {
+  padding:5px;
+}
+
+th {
+  text-align: center;
+}
+
+.mushroom_table tr:hover {
+    border: thick black;
+    cursor: pointer;
+}
+</style>
+</style>
 </html>

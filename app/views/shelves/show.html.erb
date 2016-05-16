@@ -1,39 +1,39 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <strong>Name:</strong>
+  <strong>Nama:</strong>
   <%= @shelf.name %>
 </p>
 
 <p>
-  <strong>State:</strong>
+  <strong>Status:</strong>
   <%= @shelf.state %>
 </p>
 
 <p>
-  <strong>Open date:</strong>
+  <strong>Tarikh Buka:</strong>
   <%= @shelf.open_date %>
 </p>
 
 <p>
-  <strong>Harvest date:</strong>
+  <strong>Tarikh Tuai:</strong>
   <%= @shelf.harvest_date %>
 </p>
 
 <p>
-  <strong>Close date:</strong>
+  <strong>Tarikh Tutup:</strong>
   <%= @shelf.close_date %>
 </p>
 
 <p>
-  <strong>End date:</strong>
+  <strong>Tarikh Tamat:</strong>
   <%= @shelf.end_date %>
 </p>
 
 <p>
-  <strong>Cycle:</strong>
+  <strong>Kitaran:</strong>
   <%= @shelf.cycle %>
 </p>
 
-<%= link_to 'Edit', edit_house_shelf_path(params[:house_id], @shelf) %> |
-<%= link_to 'Back', house_shelves_path(params[:house_id]) %>
+<%= link_to 'Ubah', edit_house_shelf_path(params[:house_id], @shelf) %> |
+<%= link_to 'Kembali', house_shelves_path(params[:house_id]) %>

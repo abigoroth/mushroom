@@ -61,6 +61,17 @@ class HousesController < ApplicationController
     end
   end
 
+  def schedule
+    prepare_params(
+      schedule_houses_path(
+        market_id: Market.first.id,
+        month: Time.now.month,
+        year: Time.now.year,
+        date: Time.now.day
+        )
+      )
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_house

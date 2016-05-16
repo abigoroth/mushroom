@@ -1,4 +1,22 @@
 Rails.application.routes.draw do
+  resources :production2s do
+    collection do
+      post "save_production"
+    end
+  end
+
+  resources :sale_records
+
+  resources :markets
+
+  resources :customer_purchases do
+    collection do
+      post "save_purchases"
+    end
+  end
+
+  resources :customers
+
   resources :staffs
 
   resources :productions
@@ -8,6 +26,13 @@ Rails.application.routes.draw do
         collection do
           post "operation"
         end
+        member do
+          get "reclose"
+        end
+      end
+
+      collection do
+        get "schedule"
       end
   end
 
@@ -15,7 +40,10 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  # root 'welcome#index'
+
+  post "welcome/sign_in" => "welcome#sign_in"
+  get "welcome/sign_out" => "welcome#sign_out"
+  root 'welcome#index'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

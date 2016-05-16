@@ -1,0 +1,171 @@
+<%
+@houses = House.select(:name,:id).all 
+%>
+<h1>Pengeluaran</h1>
+
+<% unless session[:level] == "worker" %>
+  <form action="" id="market">
+
+    Tahun : 
+    <select name="year" id="" class="dosubmit">
+      <% (Time.now.year-5..Time.now.year+5).to_a.each do |y| %>
+      <option 
+        value="<%=y%>" 
+        <%= "selected=selected" if params[:year] == y.to_s %>
+        ><%= y %></option>
+      <% end %>
+    </select>
+
+    Bulan : 
+    <select name="month" id="" class="dosubmit">
+      <% (1..12).to_a.each do |m| %>
+      <option 
+        value="<%=m%>" 
+        <%= "selected=selected" if params[:month] == m.to_s %>
+        ><%= m %></option>
+      <% end %>
+    </select>
+    <input type="hidden" name="page" value="<%= params[:page] %>">
+  </form>
+<% end %>
+<br>
+
+<table border=1 class="mushroom_table">
+  <thead>
+    <tr>
+      <th>Rumah</th>
+      <% @houses.each do |h| %>
+      <th>
+        <%= h.name %>
+      </th>
+      <% end %>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% if session[:level] == "worker" %>
+      <tr class="
+       <%= "trigger" if !(@production2s.detect{|x| x.date.day == Time.now.day}) %>
+       ">
+        <td><%=Time.now.day%>
+          <% @houses.map{|x| x.id }.each do |y| %>
+            <input type="text" name="house_ids[]" value="<%= y %>" class="hide toggle"
+            style="display:none;"
+            >
+            <input type="text" name="date" value="<%= params[:year] + "-" + params[:month] + "-" + Time.now.day.to_s %>" style="display:none;">
+          <% end %>
+        </td>
+        <% @houses.each do |c| %>
+          <% p = @production2s.detect{|x| x.date.day == Time.now.day && x.house_id == c.id} %>
+            <% if p %>
+            <td class="">
+              <span class="data"><%= p.total %></span>
+              <input type="text" name="am[]" value="<%= p.am %>" placeholder="AM" class="hide toggle">
+              <input type="text" name="pm[]" value="<%= p.pm %>" placeholder="PM" class="hide toggle">
+            </td>
+            <% else %>
+            <td class="">
+              <input type="text" name="am[]" placeholder="AM" class="hide toggle">
+              <input type="text" name="pm[]" placeholder="PM" class="hide toggle">
+            </td>
+            <% end %>
+        <% end %>
+      </tr>
+    <% else %>
+      <% (1..Time.days_in_month(params[:month].to_i , params[:year].to_i)).to_a.each do |d| %>
+      <tr class="trigger">
+        <td><%=d%>
+          <% @houses.map{|x| x.id }.each do |y| %>
+            <input type="text" name="house_ids[]" value="<%= y %>" class="hide toggle"
+            style="display:none;"
+            >
+            <input type="text" name="date" value="<%= params[:year] + "-" + params[:month] + "-" + d.to_s %>" style="display:none;">
+          <% end %>
+        </td>
+        <% @houses.each do |c| %>
+          <% p = @production2s.detect{|x| x.date.day == d && x.house_id == c.id} %>
+            <% if p %>
+            <td class="">
+              <span class="data"><%= p.total %></span>
+              <input type="text" name="am[]" value="<%= p.am %>" placeholder="AM" class="hide toggle">
+              <input type="text" name="pm[]" value="<%= p.pm %>" placeholder="PM" class="hide toggle">
+            </td>
+            <% else %>
+            <td class="">
+              <input type="text" name="am[]" placeholder="AM" class="hide toggle">
+              <input type="text" name="pm[]" placeholder="PM" class="hide toggle">
+            </td>
+            <% end %>
+        <% end %>
+      </tr>
+      <% end %>
+      <tr>
+        <td>TTL</td>
+        <% @houses.each do |h| %>
+        <td>
+          <%= h.total_by_month(params[:month] , params[:year]) %>
+        </td>
+        <% end %>
+      </tr>
+    <% end %>
+
+  </tbody>
+</table>
+
+<br>
+
+<%#= link_to 'New Production2', new_production2_path %>
+
+<script>
+  $(".dosubmit").change(function(){
+    $("#market").submit()
+  })
+  $(".trigger").click(function(v){
+    console.log($(this).children().length)
+    td_count = $(this).children().length
+    if ($( this ).next().find(".save").length < 1){    
+      $(this).after("<tr class='save'><td colspan="+td_count+" style='text-align:right;'> <a class='btn save btn-default'>Save</a> <a class='btn btn-danger cancel'>Cancel</a> </td></tr>")
+      $(this).find(".hide").removeClass("hide");
+      $(this).find(".data").addClass("hide");
+    }
+  })
+
+  $(document).on("click", ".save" , function(e){
+    e.preventDefault();
+    //do save
+    var data = $(this).parent().parent().prev().find("input").serialize();
+    $.ajax({
+      url: '<%= save_production_production2s_path %>',
+      data: data,
+      method: "POST",
+      success: function(response){
+        console.log(response)
+        $(this).parent().parent().prev().find(".data").removeClass("hide");
+        $(this).parent().parent().prev().find(".toggle").addClass("hide");
+        $(this).parent().parent().remove()
+        $("#market").submit();
+      }
+    })
+    $(document).on("click", ".cancel" , function(e){
+      $(this).parent().parent().prev().find(".data").removeClass("hide");
+      $(this).parent().parent().prev().find(".toggle").addClass("hide");
+      $(this).parent().parent().remove()
+    })
+    console.log( data )
+  })
+</script>
+
+<style>
+.seperator {
+    border-right: thick double #ff0000;
+}
+
+.hide {
+  display: none;
+}
+
+.toggle {
+  width: 50px;
+}
+
+</style>

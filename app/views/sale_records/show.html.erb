@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Arra:</strong>
+  <%= @sale_record.arra %>
+</p>
+
+<p>
+  <strong>Purchase:</strong>
+  <%= @sale_record.purchase %>
+</p>
+
+<p>
+  <strong>Ttl in:</strong>
+  <%= @sale_record.ttl_in %>
+</p>
+
+<p>
+  <strong>Ttl out:</strong>
+  <%= @sale_record.ttl_out %>
+</p>
+
+<p>
+  <strong>Date:</strong>
+  <%= @sale_record.date %>
+</p>
+
+<%= link_to 'Ubah', edit_sale_record_path(@sale_record) %> |
+<%= link_to 'Kembali', sale_records_path %>

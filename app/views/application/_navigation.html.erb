@@ -1,3 +1,15 @@
+<%
+def params_data 
+ {
+:date => params[:date],
+:month => params[:month],
+:year => params[:year],
+:market_id => params[:market_id],
+:per_page => params[:per_page],
+:page => params[:page]
+  }
+end
+%>
 <nav class="navbar navbar-default">
   <div class="container">
     <div class="navbar-header">
@@ -7,12 +19,87 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Mushroom</a>
+      <a class="navbar-brand" href="#">Arra Mushroom House System V2</a>
     </div>
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li class="<%= 'active' if request.path_info.include?('houses') %>"><a href="/houses">Houses</a></li>
-        <li class="<%= 'active' if request.path_info.include?('productions') %>"><a href="/productions">Production</a></li>
+        <% if session[:level] == "manager" %>
+          <li class="<%= 'active' if request.path_info.include?('houses') %>">
+            <%= link_to "Rumah", houses_path(params_data) %>
+
+          </li>
+          <li class="<%= 'active' if request.path_info.include?('production2s') %>">
+            <%= link_to "Pengeluaran", production2s_path(params_data) %>
+          </li>
+
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pembelian Pembeli <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li>
+                <%= link_to "Pasar".html_safe, markets_path(params_data) %>
+              </li>
+              <li>
+                <%= link_to "Pembeli", customers_path(params_data) %>
+              </li>
+
+              <li>
+                <%= link_to "Pembelian Pembeli", customer_purchases_path(params_data) %>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <%= link_to "Rekod Jualan", sale_records_path(params_data) %>
+          </li>
+          <li>
+            <%= link_to "Log Keluar #{session[:level]}", "/welcome/sign_out" %>
+          </li>
+        <% elsif session[:level] == "staff" %>
+          <li class="<%= 'active' if request.path_info.include?('houses') %>">
+            <%= link_to "Rumah", houses_path(params_data) %>
+
+          </li>
+          <li class="<%= 'active' if request.path_info.include?('production2s') %>">
+            <%= link_to "Pengeluaran", production2s_path(params_data) %>
+          </li>
+
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pembelian Pembeli <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li>
+                <%= link_to "Pasar".html_safe, markets_path(params_data) %>
+              </li>
+              <li>
+                <%= link_to "Pembeli", customers_path(params_data) %>
+              </li>
+
+              <li>
+                <%= link_to "Pembelian Pembeli", customer_purchases_path(params_data) %>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <%= link_to "Rekod Jualan", sale_records_path(params_data) %>
+          </li>
+          <li>
+            <%= link_to "Log Keluar #{session[:level]}", "/welcome/sign_out" %>
+          </li>
+        <% elsif session[:level] == "worker" %>
+          <li class="<%= 'active' if request.path_info.include?('schedule') %>">
+            <%= link_to "Jadual", schedule_houses_path(
+              year: params[:year],
+              month: params[:month],
+              date: params[:date]
+              )
+              %>
+
+          </li>
+          <li class="<%= 'active' if request.path_info.include?('production2s') %>">
+            <%= link_to "Pengeluaran", production2s_path(params_data) %>
+          </li>
+          <li>
+            <%= link_to "Log Keluar #{session[:level]}", "/welcome/sign_out" %>
+          </li>
+        <% end %>
       </ul>
     </div><!--/.nav-collapse -->
   </div>

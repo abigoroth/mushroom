@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  arra: 1.5
+  purchase: 1.5
+  ttl_in: 1.5
+  ttl_out: 1.5
+  date: 2015-12-17
+
+two:
+  arra: 1.5
+  purchase: 1.5
+  ttl_in: 1.5
+  ttl_out: 1.5
+  date: 2015-12-17

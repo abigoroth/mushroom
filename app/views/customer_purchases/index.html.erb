@@ -1,0 +1,198 @@
+<h1>Rekod Pembelian Pembeli</h1>
+
+<form action="" id="market">
+  Pasar : 
+  <select name="market_id" id="market_id" class="dosubmit">
+    <% Market.all.each do |m| %>
+    <option value="<%= m.id %>"
+    <%= "selected=selected" if params[:market_id] == m.id.to_s %>
+     >
+      <%= m.name %>
+    </option>
+    <% end %>
+  </select>
+
+  Tahun : 
+  <select name="year" id="" class="dosubmit">
+    <% (Time.now.year-5..Time.now.year+5).to_a.each do |y| %>
+    <option 
+      value="<%=y%>" 
+      <%= "selected=selected" if params[:year] == y.to_s %>
+      ><%= y %></option>
+    <% end %>
+  </select>
+
+  Bulan : 
+  <select name="month" id="" class="dosubmit">
+    <% (1..12).to_a.each do |m| %>
+    <option 
+      value="<%=m%>" 
+      <%= "selected=selected" if params[:month] == m.to_s %>
+      ><%= m %></option>
+    <% end %>
+  </select>
+
+  Pelanggan per muka : 
+  <select name="per_page" id="" class="dosubmit">
+    <% (2..20).step(2).each do |n| %>
+    <option value="<%= n %>"
+    <%= "selected=selected" if params[:per_page] == n.to_s %>
+      ><%= n %></option>
+    <% end %>
+  </select>
+  <input type="hidden" name="page" value="<%= params[:page] %>">
+</form>
+<br>
+<%= will_paginate @customers %>
+<br>
+
+<h3><%= Market.find(params[:market_id]).name %> <%= params[:month] %>/<%= params[:year] %> </h3>
+Q = Kuantiti
+J = Jumlah Sepatutnya dibayar
+Y = Jumlah yang dibayar
+B = Baki atau Hutang
+<table border=1 class="mushroom_table">
+  <thead>
+    <tr>
+      <th rowspan=1>Nama</th>
+      <%
+      @customers.each do |c| %>
+      <th colspan=4 class="seperator" align="center">
+        <%= c.name %>
+      </th>
+      <% end %>
+    </tr>
+
+    <tr>
+      <td>Tarikh</td>
+      <% @customers.each do |c| %>
+      <td>Q</td>
+      <td>J</td>
+      <td>Y</td>
+      <td class="seperator">B</td>
+      <% end %>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% (1..Time.days_in_month(params[:month].to_i , params[:year].to_i)).to_a.each do |d| %>
+    <tr class="trigger">
+      <td><%=d%>
+        <% @customers.map{|x| x.id }.each do |y| %>
+          <input type="text" name="customer_ids[]" value="<%= y %>" class="hide toggle"
+          style="display:none;"
+          >
+          <input type="text" name="date" value="<%= params[:year] + "-" + params[:month] + "-" + d.to_s %>" style="display:none;">
+        <% end %>
+      </td>
+      <% @customers.each do |c| %>
+        <% cp = @customer_purchases.detect{|x| x.date.day == d && x.customer_id == c.id} %>
+          <% if cp %>
+          <td> 
+            <span class="data"><%= cp.quantity %></span> 
+            <input type="text" name="quantity[]" value="<%= cp.quantity%>" class="hide toggle">
+          </td>
+          <td> 
+            <span class="data"><%= cp.expected_payment %> </span>
+            <input type="text" name="expected_payment[]" value="<%= cp.expected_payment %>" class="hide toggle">
+          </td>
+          <td> 
+            <span class="data"><%= cp.actual_payment %> </span>
+            <input type="text" name="actual_payment[]" value="<%= cp.actual_payment %>" class="hide toggle">
+          </td>
+          <td class="seperator"> <%= cp.expected_payment - cp.actual_payment %></td>
+          <% else %>
+          <td>
+            <input type="text" name="quantity[]" class="hide toggle">
+          </td>
+          <td>
+            <input type="text" name="expected_payment[]" class="hide toggle">
+          </td>
+          <td>
+            <input type="text" name="actual_payment[]" class="hide toggle">
+          </td>
+          <td class="seperator"></td>
+          <% end %>
+        <% end %>
+    </tr>
+    <% end %>
+    <tr>
+      <td>
+        Total
+      </td>
+      <% @customers.each do |c| %>
+      <td>
+        <%= c.quantity_by_month(params[:month] , params[:year]) %>
+      </td>
+      <td>
+        <%= c.expected_payment_by_month(params[:month] , params[:year]) %>
+      </td>
+      <td>
+        <%= c.actual_payment_by_month(params[:month] , params[:year]) %>
+      </td>
+      <td class="seperator">
+        <%= c.debt_by_month(params[:month] , params[:year]) %>
+      </td>
+      <% end %>
+    </tr>
+  </tbody>
+</table>
+
+<br>
+
+<%#= link_to 'New Customer purchase', new_customer_purchase_path %>
+
+<script>
+  $(".dosubmit").change(function(){
+    $("#market").submit()
+  })
+  $(".trigger").click(function(v){
+    console.log($(this).children().length)
+    td_count = $(this).children().length
+    if ($( this ).next().find(".save").length < 1){    
+      $(this).after("<tr class=''><td colspan="+td_count+" style='text-align:right;'> <a class='btn save btn-default'>Save</a> <a class='btn btn-danger cancel'>Cancel</a> </td></tr>")
+      $(this).find(".hide").removeClass("hide");
+      $(this).find(".data").addClass("hide");
+    }
+  })
+
+  $(document).on("click", ".save" , function(e){
+    e.preventDefault();
+    //do save
+    var data = $(this).parent().parent().prev().find("input").serialize();
+    $.ajax({
+      url: '<%= save_purchases_customer_purchases_path %>',
+      data: data,
+      method: "POST",
+      success: function(response){
+        console.log(response)
+        $(this).parent().parent().prev().find(".data").removeClass("hide");
+        $(this).parent().parent().prev().find(".toggle").addClass("hide");
+        $(this).parent().parent().remove()
+        $("#market").submit();
+      }
+    })
+    $(document).on("click", ".cancel" , function(e){
+      $(this).parent().parent().prev().find(".data").removeClass("hide");
+      $(this).parent().parent().prev().find(".toggle").addClass("hide");
+      $(this).parent().parent().remove()
+    })
+    console.log( data )
+  })
+</script>
+
+<style>
+.seperator {
+    border-style: solid;
+    border-right: thick double #ff0000;
+}
+
+.hide {
+  display: none;
+}
+
+.toggle {
+  width: 50px;
+}
+
+</style>

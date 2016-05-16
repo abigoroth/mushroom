@@ -1,0 +1,77 @@
+<h3>Jadual</h3>
+<form action="" id="market">
+  Tahun : 
+  <select name="year" id="" class="dosubmit">
+    <% (Time.now.year-5..Time.now.year+5).to_a.each do |y| %>
+    <option 
+      value="<%=y%>" 
+      <%= "selected=selected" if params[:year] == y.to_s %>
+      ><%= y %></option>
+    <% end %>
+  </select>
+
+  Bulan : 
+  <select name="month" id="" class="dosubmit">
+    <% (1..12).to_a.each do |m| %>
+    <option 
+      value="<%=m%>" 
+      <%= "selected=selected" if params[:month] == m.to_s %>
+      ><%= m %></option>
+    <% end %>
+  </select>
+
+  Tarikh :
+  <select name="date" id="" class="dosubmit">
+    <% (1..Time.days_in_month(params[:month].to_i , params[:year].to_i)).to_a.each do |n| %>
+    <option value="<%= n %>"
+    <%= "selected=selected" if params[:date] == n.to_s %>
+      ><%= n %></option>
+    <% end %>
+  </select>
+  <input type="hidden" name="page" value="<%= params[:page] %>">
+</form>
+<br>
+<table border=1>
+	<tr>
+		<th>
+			RUMAH
+		</th>
+		<th>
+			BUKA
+		</th>
+		<th>
+			TUTUP
+		</th>
+	</tr>
+	<% House.all.each do |h| %>
+		<tr>
+			<td valign="top">
+				<%= h.name %>
+			</td>
+			<td>
+				<% shelves = Shelf.where("open_date = :date and house_id = :house_id", house_id: h.id, date: "#{params[:year]}-#{params[:month]}-#{params[:date]}" ).order(:name) %>
+				<ul>
+					<% shelves.each do |s| %>
+						<li>
+							<%= s.name %>
+						</li>
+					<% end %>
+				</ul>
+			</td>
+			<td valign="top">
+				<% shelves = Shelf.where("close_date = :date and house_id = :house_id", house_id: h.id, date: "#{params[:year]}-#{params[:month]}-#{params[:date]}" ).order(:name) %>
+				<ul>
+					<% shelves.each do |s| %>
+						<li><%= s.name %></li>
+					<% end %>
+				</ul>
+			</td>
+		</tr>
+	<% end %>
+</table>
+
+<script>
+  $(".dosubmit").change(function(){
+    $("#market").submit()
+  })
+</script>
